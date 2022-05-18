@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const cors = require("cors");
@@ -29,9 +29,24 @@ const run = async () => {
     const result = await todoCollection.insertOne(todoData);
     res.send(result);
   });
-    
+
   app.get("/todo", async (req, res) => {
     const result = await todoCollection.find({}).toArray();
+    res.send(result);
+  });
+
+  app.put("/todo", async (req, res) => {
+    const { _id, isComplete, title, description } = req.body.todoData;
+    const filter = { _id: ObjectId(_id) };
+    const options = { upsert: true };
+    const updateDoc = {
+      $set: {
+        isComplete,
+        title,
+        description,
+      },
+    };
+    const result = await todoCollection.updateOne(filter, updateDoc, options);
     res.send(result);
   });
 };
