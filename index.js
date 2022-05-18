@@ -29,7 +29,11 @@ const run = async () => {
     const result = await todoCollection.insertOne(todoData);
     res.send(result);
   });
- 
+    
+  app.get("/todo", async (req, res) => {
+    const result = await todoCollection.find({}).toArray();
+    res.send(result);
+  });
 };
 
 run().catch(console.dir);
